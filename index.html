@@ -1,0 +1,298 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Лабораторна робота 13</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #a3a3a3;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #783f47;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .task-container {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .task-title {
+            color: #5a3238;
+            border-bottom: 2px solid #783f47;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group {
+            margin: 10px 0;
+        }
+        
+        .input-group label {
+            margin-right: 10px;
+        }
+        
+        input, button {
+            padding: 5px 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        button {
+            background-color: #783f47;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #5a3238;
+        }
+        
+        .result-box {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
+</head>    
+<body>
+    <div class="header">
+        <h1>Лабораторна робота 13</h1>
+        <p>Використання функцій JavaScript</p>
+    </div>
+
+    <!-- Task 1 -->
+    <div class="task-container">
+        <h2 class="task-title">1. Дні тижня</h2>
+        <div id="calendar"></div>
+    </div>
+
+    <!-- Task 2 -->
+    <div class="task-container">
+        <h2 class="task-title">2. Підрахунок часу до дня народження</h2>
+        <div class="input-group">
+            <label for="birthDay">День:</label>
+            <input type="number" id="birthDay" min="1" max="31" placeholder="День" value="1">
+            
+            <label for="birthMonth">Місяць:</label>
+            <input type="number" id="birthMonth" min="1" max="12" placeholder="Місяць" value="1">
+            
+            <label for="birthYear">Рік:</label>
+            <input type="number" id="birthYear" min="1900" placeholder="Рік" value="2000">
+            
+            <button onclick="calculateTimeUntilBirthday()">Обчислити</button>
+        </div>
+        <div id="timeUntil" class="result-box">Введіть дату народження і натисніть "Обчислити"</div>
+    </div>
+
+    <!-- Task 3 -->
+    <div class="task-container">
+        <h2 class="task-title">3. Таблиця множення</h2>
+        <div id="multiplicationTables"></div>
+    </div>
+
+    <!-- Task 4 -->
+    <div class="task-container">
+        <h2 class="task-title">4. Обчислення площі фігур</h2>
+        <div id="areaCalculations"></div>
+    </div>
+
+    <!-- Task 5 -->
+    <div class="task-container">
+        <h2 class="task-title">5. Форматування тексту</h2>
+        <div id="formattedText"></div>
+    </div>
+
+    <!-- Task 6 -->
+    <div class="task-container">
+        <h2 class="task-title">6. Математичні операції</h2>
+        <div id="mathOperations"></div>
+    </div>
+
+    <!-- Task 7 -->
+    <div class="task-container">
+        <h2 class="task-title">7. Конвертер температур</h2>
+        <div id="temperatureConverter"></div>
+    </div>
+
+    <!-- Task 8 -->
+    <div class="task-container">
+        <h2 class="task-title">8. Обчислення добутку</h2>
+        <div id="multiplicationResults"></div>
+    </div>
+
+    <script>
+        // Task 1 - Days of week
+        function weekDay(size, day, color) {
+            const days = [
+                "Неділя", "Понеділок", "Вівторок", "Середа",
+                "Четвер", "П'ятниця", "Субота"
+            ];
+            return `<div style="font-size: ${size}px; color: ${color};">
+                ${days[day]}
+            </div>`;
+        }
+
+        const today = new Date();
+        let output = "";
+        const styles = [
+            {size: 20, color: "#FF0000"},
+            {size: 24, color: "#4CAF50"},
+            {size: 28, color: "#2196F3"},
+            {size: 32, color: "#9C27B0"},
+            {size: 36, color: "#FF9800"},
+            {size: 40, color: "#795548"},
+            {size: 44, color: "#607D8B"}
+        ];
+
+        for (let i = 0; i < 7; i++) {
+            output += weekDay(styles[i].size, i, styles[i].color);
+        }
+        document.getElementById("calendar").innerHTML = output;
+
+        // Task 2 - Birthday countdown
+        function calculateTimeUntilBirthday() {
+            let today = new Date();
+            let day = parseInt(document.getElementById("birthDay").value);
+            let month = parseInt(document.getElementById("birthMonth").value) - 1;
+            let year = parseInt(document.getElementById("birthYear").value);
+            
+            if (!day || !month || !year || day < 1 || day > 31 || month < 0 || month > 11 || year < 1900) {
+                document.getElementById("timeUntil").innerHTML = 
+                    "Будь ласка, введіть коректну дату народження";
+                return;
+            }
+
+            let nextBirthday = new Date(today.getFullYear(), month, day);
+            if (today > nextBirthday) {
+                nextBirthday.setFullYear(today.getFullYear() + 1);
+            }
+            
+            const day_ms = 86400000;
+            const hour_ms = 3600000;
+            const minute_ms = 60000;
+            
+            let timeDiff = nextBirthday.getTime() - today.getTime();
+            let days = Math.floor(timeDiff/day_ms);
+            let hours = Math.floor((timeDiff-days*day_ms)/hour_ms);
+            let minutes = Math.floor((timeDiff-days*day_ms-hours*hour_ms)/minute_ms);
+            
+            let age = today.getFullYear() - year;
+            if (today < new Date(today.getFullYear(), month, day)) {
+                age--;
+            }
+            
+            let nextAge = age + 1;
+            
+            document.getElementById("timeUntil").innerHTML = 
+                `До ${nextAge}-го дня народження залишилося: ${days} днів, ${hours} годин, ${minutes} хвилин<br>
+                Поточний вік: ${age} років`;
+        }
+
+        // Task 3 - Multiplication table
+        function multiplyTable(number) {
+            let output = "<div class='result-box'>";
+            for(let i = 1; i <= 10; i++) {
+                output += `${number} x ${i} = ${number * i}<br>`;
+            }
+            output += "</div>";
+            return output;
+        }
+
+        document.getElementById("multiplicationTables").innerHTML = 
+            multiplyTable(5) + multiplyTable(7) + multiplyTable(9);
+
+        // Task 4 - Area calculations
+        function calculateArea(type, ...params) {
+            switch(type) {
+                case 'rectangle': return params[0] * params[1];
+                case 'triangle': return (params[0] * params[1]) / 2;
+                case 'circle': return Math.PI * params[0] * params[0];
+                default: return 0;
+            }
+        }
+
+        document.getElementById("areaCalculations").innerHTML = `
+            <div class='result-box'>
+                Площа прямокутника (5 x 10) = ${calculateArea('rectangle', 5, 10)}<br>
+                Площа трикутника (основа 8, висота 6) = ${calculateArea('triangle', 8, 6)}<br>
+                Площа кола (радіус 4) = ${calculateArea('circle', 4).toFixed(2)}
+            </div>`;
+
+        // Task 5 - Text formatting
+        function formatText(text, color = "black", size = 14, bold = false) {
+            let style = `color: ${color}; font-size: ${size}pt;`;
+            if (bold) style += "font-weight: bold;";
+            return `<div style="${style}">${text}</div>`;
+        }
+
+        document.getElementById("formattedText").innerHTML = 
+            formatText("Рожевий жирний текст", "pink", 24, true) +
+            formatText("Синій текст", "blue", 18) +
+            formatText("Текст за замовчуванням") +
+            formatText("Блакитний маленький текст", "cyan", 10);
+
+        // Task 6 - Math operations
+        function cube(x) { return x * x * x; }
+        function square(x) { return x * x; }
+        function calculate(number, operation) {
+            return operation(number) + number * 2;
+        }
+
+        document.getElementById("mathOperations").innerHTML = `
+            <div class='result-box'>
+                <h3>Результати обчислень:</h3>
+                Куб числа 3 плюс 6: ${calculate(3, cube)}<br>
+                Квадрат числа 4 плюс 8: ${calculate(4, square)}
+            </div>`;
+
+        // Task 7 - Temperature converter
+        let celsiusToFahrenheit = function(celsius) {
+            return (celsius * 9/5) + 32;
+        }
+        
+        let temperature = 25;
+        document.getElementById("temperatureConverter").innerHTML = `
+            <div class='result-box'>
+                Значення температури: ${temperature}°C<br>
+                Функція конвертації:<br>${celsiusToFahrenheit.valueOf()}<br>
+                Результат конвертації: ${celsiusToFahrenheit(temperature)}°F
+            </div>`;
+
+        // Task 8 - Multiplication
+        function multiply() {
+            let result = 1;
+            for (let i = 0; i < arguments.length; i++) {
+                if (typeof arguments[i] !== 'number') {
+                    return 0;
+                }
+                result *= arguments[i];
+            }
+            return result;
+        }
+
+        document.getElementById("multiplicationResults").innerHTML = `
+            <div class='result-box'>
+                Добуток двох чисел (3, 4): ${multiply(3, 4)}<br>
+                Добуток трьох чисел (2, 3, 4): ${multiply(2, 3, 4)}<br>
+                Спроба з чотирма числами (2, 3, 4, 5): ${multiply(2, 3, 4, 5)}
+            </div>`;
+    </script>
+</body>
+</html>
